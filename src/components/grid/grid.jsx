@@ -1,32 +1,31 @@
 import React, { Component } from 'react'
 import { append, concat, slice } from 'ramda'
 import { Observable } from 'rxjs'
-import { take, takeUntil } from 'rxjs/operators'
+import { pluck, take, takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 import './styles.scss'
 
 class Grid extends Component {
   state = {
-    coords: [[1, 1], [5, 7]],
-    nextStart: []
+    coords: [[1, 1], [5, 7]]
   }
 
   componentDidMount() {
     this._unmount$ = (new Subject()).pipe(take(1))
-    this._mouseDown$ = (new Subject()).pipe(takeUntil(this._unmount$))
-    this._mouseUp$ = (new Subject()).pipe(takeUntil(this._unmount$))
+    this._mouseDown$ = (new Subject()).pipe(pluck('target', 'dataset'), takeUntil(this._unmount$))
+    this._mouseUp$ = (new Subject()).pipe(pluck('target', 'dataset'), takeUntil(this._unmount$))
 
-    this._dragStart$ = this._mouseDown$
-    this._dragEnd$ = this._mouseUp$
-
-    this._dragStart$.subscribe(
-      ({target: {dataset: {x, y}}}) => {
-        this.setState({nextStart: [Number(x), Number(y)]})
-      }
+    this._shapeDrawn$ = Observable.zip(
+      this._mouseDown$,
+      this._mouseUp$
     )
 
-    this._dragEnd$.subscribe(
-      ({target: {dataset: {x, y}}}) => this.setState({coords: [this.state.nextStart, [Number(x), Number(y)]]})
+    this._shapeDrawn$.subscribe(
+      ([{x: x1, y: y1}, {x: x2, y: y2}]) => {
+        this.setState({
+          coords: this._orderCoordinateSet([[Number(x1), Number(y1)], [Number(x2), Number(y2)]])
+        })
+      }
     )
   }
 
@@ -73,6 +72,13 @@ class Grid extends Component {
       if (x === x2) { return ( i === 1 || i === 3 ) }
       if (x > x1 && x < x2) { return true }
     }
+  }
+
+  _orderCoordinateSet = ([[x1, y1], [x2, y2]]) => {
+    if (x1 < x2 && y1 < y2) { return [[x1, y1], [x2, y2]] }
+    if (x1 > x2 && y1 < y2) { return [[x2, y1], [x1, y2]] }
+    if (x1 < x2 && y1 > y2) { return [[x1, y2], [x2, y1]] }
+    return [[x2, y2], [x1, y1]]
   }
 
   render() {
