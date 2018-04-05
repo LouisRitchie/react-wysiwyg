@@ -2,7 +2,7 @@
   height: 100%;
   width: 100%;
   position: relative;
-  border: 1px solid #aaa;
+  border: 1px solid #ddd;
   margin: 50px auto;
   border-collapse: collapse;
 
@@ -32,6 +32,12 @@
         background: black;
         top: calc(50% - 2px);
         left: calc(50% - 2px);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      &:hover::after {
+        opacity: 1;
       }
     }
 
@@ -39,6 +45,10 @@
       width: 10px;
       height: 10px;
       border: 1px solid #ddd;
+
+      &.coloured {
+        background: lightblue;
+      }
 
       &:nth-child(1) {
         border-top: none;

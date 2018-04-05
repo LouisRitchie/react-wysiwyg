@@ -7,7 +7,8 @@ import './styles.scss'
 
 class Grid extends Component {
   state = {
-    coords: [ [0, 0], [0, 0] ]
+    coords: [[1, 1], [5, 7]],
+    nextStart: []
   }
 
   componentDidMount() {
@@ -19,18 +20,12 @@ class Grid extends Component {
     this._dragEnd$ = this._mouseUp$
 
     this._dragStart$.subscribe(
-      ({x, y}) => {
-        this.setState({
-          coords: append([x, y], slice(-20, 21, this.state.coords))
-        })
-      }
+      ({target: {dataset: {x, y}}}) => this.setState({nextStart: [Number(x), Number(y)]})
     )
 
-    this._dragEnd$.subscribe(({x, y}) => {
-      this.setState({
-        coords: concat([[x, y], [x, y]], slice(-20, 21, this.state.coords))
-      })
-    })
+    this._dragEnd$.subscribe(
+      ({target: {dataset: {x, y}}}) => this.setState({coords: [this.state.nextStart, [Number(x), Number(y)]]})
+    )
   }
 
   getTLHW = (currentCoords, prevCoords) => {
@@ -55,11 +50,31 @@ class Grid extends Component {
     return { top: result[0], left: result[1], height: result[2], width: result[3] }
   }
 
-  _onMouseDown = () => this._mouseDown$.next()
+  _onMouseDown = event => this._mouseDown$.next(event)
 
-  _onMouseUp = () => this._mouseUp$.next()
+  _onMouseUp = event => this._mouseUp$.next(event)
+
+  _isQuadrantColoured = ([x, y, i]) => {
+    const [ [x1, y1], [x2, y2] ] = this.state.coords
+
+    if (x === x1 && y === y1) { return i === 4 }
+    if (x === x2 && y === y1) { return i === 3 }
+    if (x === x1 && y === y2) { return i === 2 }
+    if (x === x2 && y === y2) { return i === 1 }
+    if (x > x1 && x < x2) {
+      if (y === y1) { return ( i === 3 || i === 4 ) }
+      if (y === y2) { return ( i === 1 || i === 2 ) }
+      if (y > y1 && y < y2) { return true }
+    }
+    if (y > y1 && y < y2) {
+      if (x === x1) { return ( i === 2 || i === 4 ) }
+      if (x === x2) { return ( i === 1 || i === 3 ) }
+      if (x > x1 && x < x2) { return true }
+    }
+  }
 
   render() {
+    console.log(this.state.coords)
     return (
       <div
         onMouseDown={this._onMouseDown}
@@ -67,11 +82,22 @@ class Grid extends Component {
         className='gridWrapper'
         style={{ height: 20 * 20, width: 20 * 20 }}>
         {Array.apply(null, Array(21)).map((_, i) => (
-          <div key={i} className='gridRow' style={{top: 20 * i - 10}}>
+          <div
+            key={i}
+            className='gridRow'
+            style={{top: 20 * i - 10}}>
             {Array.apply(null, Array(21)).map((_, j) => (
-              <div key={j} className='square' style={{left: j * 20}}>
+              <div
+                key={j}
+                className='square'
+                style={{left: j * 20}}>
                 {Array.apply(null, Array(4)).map((_, k) => (
-                  <div key={k} className='quadrant' style={{left: (k % 2) * 10, top: k > 1 ? 10 : 0}} />
+                  <div
+                    key={k}
+                    className={`quadrant ${this._isQuadrantColoured([j, i, k + 1]) ? 'coloured' : ''}`}
+                    data-x={j}
+                    data-y={i}
+                    style={{left: (k % 2) * 10, top: k > 1 ? 10 : 0}} />
                 ))}
               </div>
             ))}
