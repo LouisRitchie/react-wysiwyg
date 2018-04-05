@@ -7,9 +7,10 @@ import App from 'containers/app'
 import { BrowserRouter } from 'react-router-dom'
 import 'styles/index.css'
 
-console.log(rootReducer)
-
-const store = createStore(rootReducer)
+const store = createStore(
+  rootReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
 
 ReactDOM.render((
   <Provider store={store}>

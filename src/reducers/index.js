@@ -1,8 +1,12 @@
 import { combineReducers } from 'redux'
-import todos from './todos'
-import visibilityFilter from './visibilityFilter'
+import entities from './entities'
+import selection from './selection'
+import tools from './tools'
+import settings from './settings'
 
 export default combineReducers({
-  todos,
-  visibilityFilter
+  entities,
+  selection,
+  tools,
+  settings
 })
