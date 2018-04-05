@@ -10,7 +10,7 @@ class App extends Component {
       <div className="app">
         <Header />
         <Switch>
-          <Route path='/' component={Workspace} />
+          <Route exact path='/' component={Workspace} />
           <Redirect from='/*' to='/' />
         </Switch>
       </div>

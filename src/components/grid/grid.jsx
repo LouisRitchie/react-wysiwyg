@@ -12,14 +12,11 @@ class Grid extends Component {
 
   componentDidMount() {
     this._unmount$ = (new Subject()).pipe(take(1))
-    this._dragStart$ = Observable.combineLatest(
-      Observable.fromEvent(this.refs.grid, 'mousedown'),
-      Observable.fromEvent(this.refs.grid, 'mousemove')
-    ).pipe(takeUntil(this._unmount$), map(head))
-    this._dragEnd$ = Observable.combineLatest(
-      Observable.fromEvent(this.refs.grid, 'mouseup'),
-      Observable.fromEvent(this.refs.grid, 'mousemove')
-    ).pipe(takeUntil(this._unmount$), map(head))
+    this._mouseDown$ = Observable.fromEvent(this.refs.grid, 'mousedown').pipe(takeUntil(this._unmount$))
+    this._mouseUp$ = Observable.fromEvent(this.refs.grid, 'mouseup').pipe(takeUntil(this._unmount$))
+
+    this._dragStart$ = this._mouseDown$
+    this._dragEnd$ = this._mouseUp$
 
     this._dragStart$.subscribe(
       ({x, y}) => {

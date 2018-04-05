@@ -7,7 +7,6 @@ class Workspace extends Component {
   render() {
     return (
       <div className="workspaceWrapper">
-        Workspace container.
         <Toolbox />
         <Grid />
       </div>
