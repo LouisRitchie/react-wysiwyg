@@ -61,4 +61,98 @@
       }
     }
   }
+
+  .gridRow:first-child {
+    .square {
+      .quadrant:nth-child(1) {
+        border-right: none;
+      }
+
+      .quadrant:nth-child(2) {
+        border-left: none;
+      }
+    }
+
+    .square:first-child {
+      .quadrant:nth-child(1) {
+        border: none;
+      }
+
+      .quadrant:nth-child(2) {
+        border-left: none;
+      }
+
+      .quadrant:nth-child(3) {
+        border-top: none;
+      }
+    }
+
+    .square:last-child {
+      .quadrant:nth-child(2) {
+        border: none;
+      }
+
+      .quadrant:nth-child(4) {
+        border-top: none;
+      }
+    }
+  }
+
+  .gridRow {
+    .square:first-child {
+      .quadrant:nth-child(1) {
+        border-bottom: none;
+      }
+
+      .quadrant:nth-child(3) {
+        border-top: none;
+      }
+    }
+
+    .square:last-child {
+      .quadrant:nth-child(2) {
+        border-bottom: none;
+      }
+
+      .quadrant:nth-child(4) {
+        border-top: none;
+      }
+    }
+  }
+
+  .gridRow:last-child {
+    .square {
+      .quadrant:nth-child(3) {
+        border-right: none;
+      }
+
+      .quadrant:nth-child(4) {
+        border-left: none;
+      }
+    }
+
+    .square:first-child {
+      .quadrant:nth-child(1) {
+        border-bottom: none;
+      }
+
+      .quadrant:nth-child(3) {
+        border: none;
+      }
+
+      .quadrant:nth-child(4) {
+        border-left: none;
+      }
+    }
+
+    .square:last-child {
+      .quadrant:nth-child(3) {
+        border-right: none;
+      }
+
+      .quadrant:nth-child(4) {
+        border-left: none;
+      }
+    }
+  }
 }
