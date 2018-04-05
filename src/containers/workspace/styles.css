@@ -1,3 +1,6 @@
 .workspaceWrapper {
-  font-size: 1.1em;
+  position: relative;
+  padding: 3px;
+  border-top: 1px dotted #ddd;
+  border-bottom: 1px dotted #ddd;
 }

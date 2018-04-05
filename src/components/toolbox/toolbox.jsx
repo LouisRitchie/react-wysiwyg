@@ -4,7 +4,7 @@ import './styles.css'
 class Toolbox extends Component {
   render() {
     return (
-      <div>
+      <div className='toolboxWrapper'>
         Im a Toolbox
       </div>
     )

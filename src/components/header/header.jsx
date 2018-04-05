@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import './styles.css'
 
 class Header extends Component {
@@ -6,8 +7,10 @@ class Header extends Component {
     return (
       <div className="headerWrapper">
         <h1>React WYSIWYG</h1>
-        <h2>Louis Ritchie</h2>
-        <h3>View Source (coming soon)</h3>
+        <div className="headerCredits">
+          <p>By <a href='http://louisritchie.com'>Louis Ritchie</a></p>
+          <a href='https://github.com/louisritchie/react-wysiwyg'>View Source</a>
+        </div>
       </div>
     )
   }

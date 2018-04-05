@@ -13,12 +13,12 @@ class Grid extends Component {
   componentDidMount() {
     this._unmount$ = (new Subject()).pipe(take(1))
     this._dragStart$ = Observable.combineLatest(
-      Observable.fromEvent(this.refs.drawarea, 'mousedown'),
-      Observable.fromEvent(this.refs.drawarea, 'mousemove')
+      Observable.fromEvent(this.refs.grid, 'mousedown'),
+      Observable.fromEvent(this.refs.grid, 'mousemove')
     ).pipe(takeUntil(this._unmount$), map(head))
     this._dragEnd$ = Observable.combineLatest(
-      Observable.fromEvent(this.refs.drawarea, 'mouseup'),
-      Observable.fromEvent(this.refs.drawarea, 'mousemove')
+      Observable.fromEvent(this.refs.grid, 'mouseup'),
+      Observable.fromEvent(this.refs.grid, 'mousemove')
     ).pipe(takeUntil(this._unmount$), map(head))
 
     this._dragStart$.subscribe(
@@ -60,9 +60,17 @@ class Grid extends Component {
 
   render() {
     return (
-      <div ref='drawarea' onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} className='gridWrapper'>
+      <div
+        ref='grid'
+        onMouseDown={this.onMouseDown}
+        onMouseUp={this.onMouseUp}
+        className='gridWrapper'
+        style={{ height: 20 * 20, width: 20 * 20 }}>
         {this.state.coords.slice(1).map((currentCoords, i , coords) => (
-          <div key={i} style={this.getTLHW(currentCoords, coords[i])} className='drawing' />
+          <div
+            key={i}
+            style={this.getTLHW(currentCoords, coords[i])}
+            className='drawing' />
         ))}
       </div>
     )
