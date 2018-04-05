@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { append, concat, head, slice } from 'ramda'
+import { append, concat, slice } from 'ramda'
 import { Observable } from 'rxjs'
-import { map, take, takeUntil } from 'rxjs/operators'
+import { take, takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 import './styles.css'
 

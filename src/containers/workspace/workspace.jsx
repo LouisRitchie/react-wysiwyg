@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Toolbox from 'components/toolbox'
 import Grid from 'components/grid'
-import './styles.css'
+import './styles.scss'
 
 class Workspace extends Component {
   render() {
