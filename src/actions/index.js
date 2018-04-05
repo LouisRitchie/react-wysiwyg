@@ -1,22 +1,11 @@
-let nextTodoId = 0
-export const addTodo = text => ({
-  type: 'ADD_TODO',
-  id: nextTodoId++,
-  text
-})
-​
-export const setVisibilityFilter = filter => ({
-  type: 'SET_VISIBILITY_FILTER',
-  filter
-})
-​
-export const toggleTodo = id => ({
-  type: 'TOGGLE_TODO',
-  id
-})
-​
-export const VisibilityFilters = {
-  SHOW_ALL: 'SHOW_ALL',
-  SHOW_COMPLETED: 'SHOW_COMPLETED',
-  SHOW_ACTIVE: 'SHOW_ACTIVE'
+import entities from 'entities'
+import selection from 'selection'
+import settings from 'settings'
+import tools from 'tools'
+
+export default {
+  ...entities,
+  ...selection,
+  ...settings,
+  ...tools
 }

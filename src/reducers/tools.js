@@ -1,7 +1,6 @@
-
 const settings = (state = 'RECTANGLE_TOOL', {type, payload}) => {
   switch (type) {
-    case 'CHANGE_TOOL':
+    case 'TOOL_SET':
       return payload.tool
     default:
       return state
