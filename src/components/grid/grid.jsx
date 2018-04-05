@@ -20,7 +20,9 @@ class Grid extends Component {
     this._dragEnd$ = this._mouseUp$
 
     this._dragStart$.subscribe(
-      ({target: {dataset: {x, y}}}) => this.setState({nextStart: [Number(x), Number(y)]})
+      ({target: {dataset: {x, y}}}) => {
+        this.setState({nextStart: [Number(x), Number(y)]})
+      }
     )
 
     this._dragEnd$.subscribe(
@@ -74,7 +76,6 @@ class Grid extends Component {
   }
 
   render() {
-    console.log(this.state.coords)
     return (
       <div
         onMouseDown={this._onMouseDown}
