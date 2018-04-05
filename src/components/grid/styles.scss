@@ -38,6 +38,11 @@
       &:hover::after {
         opacity: 1;
       }
+
+      &.selected::after {
+        background: blue;
+        opacity: 1;
+      }
     }
 
     .quadrant {
