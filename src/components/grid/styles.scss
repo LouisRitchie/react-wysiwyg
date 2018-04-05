@@ -1,0 +1,64 @@
+.gridWrapper {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  border: 1px solid #aaa;
+  margin: 50px auto;
+  border-collapse: collapse;
+
+  .gridRow {
+    height: 20px;
+    border-collapse: collapse;
+    position: absolute;
+    right: 410px;
+
+    .square,
+    .quadrant {
+      position: absolute;
+      border-collapse: collapse;
+      box-sizing: border-box;
+    }
+
+    .square {
+      width: 20px;
+      height: 20px;
+
+      &::after {
+        content: '';
+        position: absolute;
+        height: 4px;
+        width: 4px;
+        border-radius: 50%;
+        background: black;
+        top: calc(50% - 2px);
+        left: calc(50% - 2px);
+      }
+    }
+
+    .quadrant {
+      width: 10px;
+      height: 10px;
+      border: 1px solid #ddd;
+
+      &:nth-child(1) {
+        border-top: none;
+        border-left: none;
+      }
+
+      &:nth-child(2) {
+        border-top: none;
+        border-right: none;
+      }
+
+      &:nth-child(3) {
+        border-bottom: none;
+        border-left: none;
+      }
+
+      &:nth-child(4) {
+        border-bottom: none;
+        border-right: none;
+      }
+    }
+  }
+}

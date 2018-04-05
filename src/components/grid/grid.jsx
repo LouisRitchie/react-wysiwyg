@@ -3,7 +3,7 @@ import { append, concat, slice } from 'ramda'
 import { Observable } from 'rxjs'
 import { take, takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
-import './styles.css'
+import './styles.scss'
 
 class Grid extends Component {
   state = {
@@ -12,8 +12,8 @@ class Grid extends Component {
 
   componentDidMount() {
     this._unmount$ = (new Subject()).pipe(take(1))
-    this._mouseDown$ = Observable.fromEvent(this.refs.grid, 'mousedown').pipe(takeUntil(this._unmount$))
-    this._mouseUp$ = Observable.fromEvent(this.refs.grid, 'mouseup').pipe(takeUntil(this._unmount$))
+    this._mouseDown$ = (new Subject()).pipe(takeUntil(this._unmount$))
+    this._mouseUp$ = (new Subject()).pipe(takeUntil(this._unmount$))
 
     this._dragStart$ = this._mouseDown$
     this._dragEnd$ = this._mouseUp$
@@ -55,19 +55,27 @@ class Grid extends Component {
     return { top: result[0], left: result[1], height: result[2], width: result[3] }
   }
 
+  _onMouseDown = () => this._mouseDown$.next()
+
+  _onMouseUp = () => this._mouseUp$.next()
+
   render() {
     return (
       <div
-        ref='grid'
-        onMouseDown={this.onMouseDown}
-        onMouseUp={this.onMouseUp}
+        onMouseDown={this._onMouseDown}
+        onMouseUp={this._onMouseUp}
         className='gridWrapper'
         style={{ height: 20 * 20, width: 20 * 20 }}>
-        {this.state.coords.slice(1).map((currentCoords, i , coords) => (
-          <div
-            key={i}
-            style={this.getTLHW(currentCoords, coords[i])}
-            className='drawing' />
+        {Array.apply(null, Array(21)).map((_, i) => (
+          <div key={i} className='gridRow' style={{top: 20 * i - 10}}>
+            {Array.apply(null, Array(21)).map((_, j) => (
+              <div key={j} className='square' style={{left: j * 20}}>
+                {Array.apply(null, Array(4)).map((_, k) => (
+                  <div key={k} className='quadrant' style={{left: (k % 2) * 10, top: k > 1 ? 10 : 0}} />
+                ))}
+              </div>
+            ))}
+          </div>
         ))}
       </div>
     )
