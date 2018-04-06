@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { Observable } from 'rxjs'
 import { pluck, take, takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
+import Quadrant from './quadrant'
+import { orderCoordinateSet } from './helpers.js'
 import './styles.scss'
-import { orderCoordinateSet, isQuadrantColoured, getQuadrantBorderStyle } from './helpers.js'
 
 class Grid extends Component {
   state = {
@@ -12,7 +13,7 @@ class Grid extends Component {
     hovered: [-1, -1]
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this._unmount$ = (new Subject()).pipe(take(1))
     this._mouseMove$ = (new Subject()).pipe(pluck('target', 'dataset'), takeUntil(this._unmount$))
     this._mouseDown$ = (new Subject()).pipe(pluck('target', 'dataset'), takeUntil(this._unmount$))
@@ -46,16 +47,12 @@ class Grid extends Component {
     )
   }
 
-  _handleMouseMove = event => this._mouseMove$.next(event)
-  _handleMouseDown = event => this._mouseDown$.next(event)
-  _handleMouseUp = event => this._mouseUp$.next(event)
-
   render() {
     return (
       <div
-        onMouseMove={this._handleMouseMove}
-        onMouseDown={this._handleMouseDown}
-        onMouseUp={this._handleMouseUp}
+        onMouseMove={this._mouseMove$.next}
+        onMouseDown={this._mouseDown$.next}
+        onMouseUp={this._mouseUp$.next}
         className='gridWrapper'
         style={{ height: 20 * 20, width: 20 * 20 }}>
         {Array.apply(null, Array(21)).map((_, i) => (
@@ -69,12 +66,7 @@ class Grid extends Component {
                 className={`square ${this.state.selected[0] === j && this.state.selected[1] === i ? 'selected' : ''}`}
                 style={{left: j * 20}}>
                 {Array.apply(null, Array(4)).map((_, k) => (
-                  <div
-                    key={k}
-                    className={`quadrant ${isQuadrantColoured(this.state)([j, i, k + 1]) ? 'coloured' : ''}`}
-                    data-x={j}
-                    data-y={i}
-                    style={{left: (k % 2) * 10, top: k > 1 ? 10 : 0, ...(this.state.selected[0] !== -1 && getQuadrantBorderStyle(this.state)([j, i, k + 1]))}} />
+                  <Quadrant x={j} y={i} i={k} key={k} />
                 ))}
               </div>
             ))}

@@ -10,8 +10,10 @@ export const orderCoordinateSet = ([[x1, y1], [x2, y2]]) => {
   return [[x2, y2], [x1, y1]]
 }
 
-export const isQuadrantColoured = state => ([x, y, i]) => {
-  const [ [x1, y1], [x2, y2] ] = state.coords
+export const isQuadrantColoured = (quadrantCoords, currentSquareCoords) => {
+  const [x, y, i] = quadrantCoords
+
+  const [ [x1, y1], [x2, y2] ] = currentSquareCoords
 
   if (x === x1 && y === y1) { return i === 4 }
   if (x === x2 && y === y1) { return i === 3 }
@@ -29,14 +31,10 @@ export const isQuadrantColoured = state => ([x, y, i]) => {
   }
 }
 
-export const getQuadrantBorderStyle = state => ([x, y, i]) => {
-  if (state.selected[0] === -1 || isNaN(state.selected[0])) {
-    return {}
-  }
+export const getQuadrantBorderStyle = (quadrantCoords, selectedCoords, hoveredCoords) => {
+  const [x, y, i] = quadrantCoords
 
-  console.log(state.selected, state.hovered)
-
-  const [[x1, y1], [x2, y2]] = orderCoordinateSet([state.selected, state.hovered])
+  const [[x1, y1], [x2, y2]] = orderCoordinateSet([selectedCoords, hoveredCoords])
 
   if (x === x1 && y === y1) {
     return i === 4 ? { ...TOP_BORDER_STYLE, ...LEFT_BORDER_STYLE } : {}
