@@ -15,17 +15,17 @@ Unarchive the zip archive, run `npm i && npm run dev`, and the user can get star
 
 - [x] Create a grid layout that allows you to select intersecting x and y gridlines
 - [x] Implement Drag and Drop to create rectangular areas on the grid
-- [] Multiple squares, allow squares to be selected
-- [] Implement text areas
-- [] Implement a simple toolbox, to toggle between rectangular areas and text areas
-- [] Allow user defined colours for text areas, rectangular areas, and background
-- [] Allow linear gradients for backgrounds
-- [] Font picker using Google Fonts
-- [] Generate Site button that produces a React/Webpack/Sass project as a .zip archive
-- [] Preview button that runs the generated site at `wysiwyg.louisritchie.com/preview`
-- [] Host the site at `wysiwyg.louisritchie.com`
-- [] Save work using email and password
-- [] Have multiple workspaces and easy way to switch between them
+- [ ] Multiple squares, allow squares to be selected
+- [ ] Implement text areas
+- [ ] Implement a simple toolbox, to toggle between rectangular areas and text areas
+- [ ] Allow user defined colours for text areas, rectangular areas, and background
+- [ ] Allow linear gradients for backgrounds
+- [ ] Font picker using Google Fonts
+- [ ] Generate Site button that produces a React/Webpack/Sass project as a .zip archive
+- [ ] Preview button that runs the generated site at `wysiwyg.louisritchie.com/preview`
+- [ ] Host the site at `wysiwyg.louisritchie.com`
+- [ ] Save work using email and password
+- [ ] Have multiple workspaces and easy way to switch between them
 
 ## Installation
 
