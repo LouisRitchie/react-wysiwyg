@@ -20,7 +20,9 @@ class Grid extends Component {
     this._mouseUp$ = (new Subject()).pipe(pluck('target', 'dataset'), takeUntil(this._unmount$))
 
     this._mouseDown$.subscribe(
-      ({x, y}) => this.setState({selected: [Number(x), Number(y)]})
+      ({x, y}) => {
+        this.setState({selected: [Number(x), Number(y)]})
+      }
     )
 
     this._shapeDrawn$ = Observable.zip(
@@ -48,8 +50,8 @@ class Grid extends Component {
   }
 
   mouseMove = event => this._mouseMove$.next(event)
-  mouseDown = event => this._mouseMove$.next(event)
-  mouseUp = event => this._mouseMove$.next(event)
+  mouseDown = event => this._mouseDown$.next(event)
+  mouseUp = event => this._mouseUp$.next(event)
 
   render() {
     return (
@@ -65,7 +67,7 @@ class Grid extends Component {
             className='gridRow'
             style={{top: 20 * y - 10}}>
             {Array.apply(null, Array(21)).map((_, x) => (
-              <Square x={x} y={y} key={x} />
+              <Square coords={this.state.coords} selected={this.state.selected} x={x} y={y} key={x} />
             ))}
           </div>
         ))}

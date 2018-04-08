@@ -3,11 +3,11 @@ import { isQuadrantColoured, getQuadrantBorderStyle } from '../helpers'
 
 class Quadrant extends Component {
   render() {
-    const { x, y, i } = this.props
+    const { x, y, i, coords } = this.props
 
     return (
       <div
-        className={`quadrant `/*${isQuadrantColoured([x, y, i + 1]) ? 'coloured' : ''}*/}
+        className={`quadrant  ${isQuadrantColoured([x, y, i + 1], coords) ? 'coloured' : ''}`}
         data-x={x}
         data-y={y}
         data-i={i}
