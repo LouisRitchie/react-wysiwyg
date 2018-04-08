@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Observable } from 'rxjs'
-import { pluck, take, takeUntil } from 'rxjs/operators'
+import { pluck, take, takeUntil, switchMap, withLatestFrom } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 import Square from './square'
 import { orderCoordinates } from './helpers.js'
@@ -20,15 +20,10 @@ class Grid extends Component {
     this._mouseUp$ = (new Subject()).pipe(pluck('target', 'dataset'), takeUntil(this._unmount$))
 
     this._mouseDown$.subscribe(
-      ({x, y}) => {
-        this.setState({selected: [Number(x), Number(y)]})
-      }
+      ({x, y}) => this.setState({selected: [Number(x), Number(y)]})
     )
 
-    this._shapeDrawn$ = Observable.zip(
-      this._mouseDown$,
-      this._mouseUp$
-    )
+    this._shapeDrawn$ = this._mouseUp$.pipe(withLatestFrom(this._mouseDown$))
 
     this._updateHover$ = Observable.zip(
       Observable.timer(1000, 500),
@@ -36,7 +31,7 @@ class Grid extends Component {
     )
 
     this._shapeDrawn$.subscribe(
-      ([{x: x1, y: y1}, {x: x2, y: y2}]) => {
+      ([{x: x2, y: y2}, {x: x1, y: y1}]) => {
         this.setState({
           coords: orderCoordinates([[Number(x1), Number(y1)], [Number(x2), Number(y2)]]),
           selected: [-1, -1]
