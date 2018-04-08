@@ -31,6 +31,7 @@ export const isQuadrantColoured = (quadrantCoords, currentSquareCoords) => {
   }
 }
 
+/* Dont have time to implement this.
 export const getQuadrantBorderStyle = (quadrantCoords, selectedCoords, hoveredCoords) => {
   const [x, y, i] = quadrantCoords
 
@@ -71,3 +72,4 @@ export const getQuadrantBorderStyle = (quadrantCoords, selectedCoords, hoveredCo
 
   return {}
 }
+*/

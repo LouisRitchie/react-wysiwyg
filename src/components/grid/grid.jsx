@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { Observable } from 'rxjs'
-import { filter, pluck, take, takeUntil, switchMap, withLatestFrom } from 'rxjs/operators'
+import { filter, pluck, take, takeUntil, withLatestFrom } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 import Square from './square'
 import { orderCoordinates } from './helpers.js'
@@ -9,8 +8,7 @@ import './styles.scss'
 class Grid extends Component {
   state = {
     coords: [[1, 1], [5, 7]],
-    selected: [-1, -1],
-    hovered: [-1, -1]
+    selected: [-1, -1]
   }
 
   componentDidMount() {
@@ -23,14 +21,13 @@ class Grid extends Component {
       ({x, y}) => this.setState({selected: [Number(x), Number(y)]})
     )
 
+    this._mouseUp$.subscribe(
+      () => this.setState({selected: [-1, -1]})
+    )
+
     this._shapeDrawn$ = this._mouseUp$.pipe(
       withLatestFrom(this._mouseDown$),
       filter(([{x: x2, y: y2}, {x: x1, y: y1}]) => x2 !== x1 && y2 !== y1)
-    )
-
-    this._updateHover$ = Observable.zip(
-      Observable.timer(1000, 500),
-      this._mouseMove$
     )
 
     this._shapeDrawn$.subscribe(
@@ -40,10 +37,6 @@ class Grid extends Component {
           selected: [-1, -1]
         })
       }
-    )
-
-    this._updateHover$.subscribe(
-      ([_, {x, y}]) => this.setState({hovered: [Number(x), Number(y)]})
     )
   }
 

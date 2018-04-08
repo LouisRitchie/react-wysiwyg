@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { isQuadrantColoured, getQuadrantBorderStyle } from '../helpers'
+import { isQuadrantColoured } from '../helpers'
 
 class Quadrant extends Component {
   render() {
