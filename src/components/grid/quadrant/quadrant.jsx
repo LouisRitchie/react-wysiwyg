@@ -7,9 +7,10 @@ class Quadrant extends Component {
 
     return (
       <div
-        className={`quadrant ${isQuadrantColoured([x, y, i + 1]) ? 'coloured' : ''}`}
+        className={`quadrant `/*${isQuadrantColoured([x, y, i + 1]) ? 'coloured' : ''}*/}
         data-x={x}
         data-y={y}
+        data-i={i}
         style={{
           left: (i % 2) * 10,
           top: i > 1 ? 10 : 0

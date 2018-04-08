@@ -12,14 +12,14 @@
     position: absolute;
     right: 410px;
 
-    .square,
+    .squareWrapper,
     .quadrant {
       position: absolute;
       border-collapse: collapse;
       box-sizing: border-box;
     }
 
-    .square {
+    .squareWrapper {
       width: 20px;
       height: 20px;
 
@@ -78,7 +78,7 @@
   }
 
   .gridRow:first-child {
-    .square {
+    .squareWrapper {
       .quadrant:nth-child(1) {
         border-right: none;
       }
@@ -88,7 +88,7 @@
       }
     }
 
-    .square:first-child {
+    .squareWrapper:first-child {
       .quadrant:nth-child(1) {
         border: none;
       }
@@ -102,7 +102,7 @@
       }
     }
 
-    .square:last-child {
+    .squareWrapper:last-child {
       .quadrant:nth-child(2) {
         border: none;
       }
@@ -114,7 +114,7 @@
   }
 
   .gridRow {
-    .square:first-child {
+    .squareWrapper:first-child {
       .quadrant:nth-child(1) {
         border-bottom: none;
       }
@@ -124,7 +124,7 @@
       }
     }
 
-    .square:last-child {
+    .squareWrapper:last-child {
       .quadrant:nth-child(2) {
         border-bottom: none;
       }
@@ -136,7 +136,7 @@
   }
 
   .gridRow:last-child {
-    .square {
+    .squareWrapper {
       .quadrant:nth-child(3) {
         border-right: none;
       }
@@ -146,7 +146,7 @@
       }
     }
 
-    .square:first-child {
+    .squareWrapper:first-child {
       .quadrant:nth-child(1) {
         border-bottom: none;
       }
@@ -160,7 +160,7 @@
       }
     }
 
-    .square:last-child {
+    .squareWrapper:last-child {
       .quadrant:nth-child(3) {
         border-right: none;
       }

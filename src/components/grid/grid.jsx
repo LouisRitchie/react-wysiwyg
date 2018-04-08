@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { Observable } from 'rxjs'
 import { pluck, take, takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
-import Quadrant from './quadrant'
-import { orderCoordinateSet } from './helpers.js'
+import Square from './square'
+import { orderCoordinates } from './helpers.js'
 import './styles.scss'
 
 class Grid extends Component {
@@ -13,7 +13,7 @@ class Grid extends Component {
     hovered: [-1, -1]
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this._unmount$ = (new Subject()).pipe(take(1))
     this._mouseMove$ = (new Subject()).pipe(pluck('target', 'dataset'), takeUntil(this._unmount$))
     this._mouseDown$ = (new Subject()).pipe(pluck('target', 'dataset'), takeUntil(this._unmount$))
@@ -36,7 +36,7 @@ class Grid extends Component {
     this._shapeDrawn$.subscribe(
       ([{x: x1, y: y1}, {x: x2, y: y2}]) => {
         this.setState({
-          coords: orderCoordinateSet([[Number(x1), Number(y1)], [Number(x2), Number(y2)]]),
+          coords: orderCoordinates([[Number(x1), Number(y1)], [Number(x2), Number(y2)]]),
           selected: [-1, -1]
         })
       }
@@ -47,28 +47,25 @@ class Grid extends Component {
     )
   }
 
+  mouseMove = event => this._mouseMove$.next(event)
+  mouseDown = event => this._mouseMove$.next(event)
+  mouseUp = event => this._mouseMove$.next(event)
+
   render() {
     return (
       <div
-        onMouseMove={this._mouseMove$.next}
-        onMouseDown={this._mouseDown$.next}
-        onMouseUp={this._mouseUp$.next}
+        onMouseMove={this.mouseMove}
+        onMouseDown={this.mouseDown}
+        onMouseUp={this.mouseUp}
         className='gridWrapper'
         style={{ height: 20 * 20, width: 20 * 20 }}>
-        {Array.apply(null, Array(21)).map((_, i) => (
+        {Array.apply(null, Array(21)).map((_, y) => (
           <div
-            key={i}
+            key={y}
             className='gridRow'
-            style={{top: 20 * i - 10}}>
-            {Array.apply(null, Array(21)).map((_, j) => (
-              <div
-                key={j}
-                className={`square ${this.state.selected[0] === j && this.state.selected[1] === i ? 'selected' : ''}`}
-                style={{left: j * 20}}>
-                {Array.apply(null, Array(4)).map((_, k) => (
-                  <Quadrant x={j} y={i} i={k} key={k} />
-                ))}
-              </div>
+            style={{top: 20 * y - 10}}>
+            {Array.apply(null, Array(21)).map((_, x) => (
+              <Square x={x} y={y} key={x} />
             ))}
           </div>
         ))}
