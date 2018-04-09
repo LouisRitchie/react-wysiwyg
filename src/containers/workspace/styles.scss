@@ -1,3 +1,11 @@
 .workspaceWrapper {
   position: relative;
+  height: 100vh;
+  width: 100vw;
+
+  .drawArea {
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
 }
