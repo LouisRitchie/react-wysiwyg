@@ -45,20 +45,24 @@ class Grid extends Component {
   mouseUp = event => this._mouseUp$.next(event)
 
   render() {
+    console.log(this.state.selected)
+    console.log(...this.state.coords)
     return (
       <div
         onMouseMove={this.mouseMove}
         onMouseDown={this.mouseDown}
         onMouseUp={this.mouseUp}
         className='gridWrapper'
+        draggable='false'
         style={{ height: 20 * 20, width: 20 * 20 }}>
         {Array.apply(null, Array(21)).map((_, y) => (
           <div
             key={y}
             className='gridRow'
+            draggable='false'
             style={{top: 20 * y - 10}}>
             {Array.apply(null, Array(21)).map((_, x) => (
-              <Square coords={this.state.coords} selected={this.state.selected} x={x} y={y} key={x} />
+              <Square coords={this.state.coords} selected={this.state.selected[0] === x && this.state.selected[1] === y} x={x} y={y} key={x} />
             ))}
           </div>
         ))}

@@ -2,7 +2,18 @@ import React, { Component } from 'react'
 import Quadrant from '../quadrant'
 
 class Square extends Component {
+  shouldComponentUpdate(nextProps) {
+    const { x, y, selected, coords } = this.props
+
+    return (
+      selected !== nextProps.selected ||
+      (coords[0][0] <= x && coords[1][0] >= x && coords[0][1] <= y && coords[1][1]) ||
+      (nextProps.coords[0][0] <= x && nextProps.coords[1][0] >= x && nextProps.coords[0][1] <= y && nextProps.coords[1])
+    )
+  }
+
   render() {
+    console.log('updating')
     const { x, y, selected, coords } = this.props
 
     return (
