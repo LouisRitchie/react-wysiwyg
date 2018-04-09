@@ -1,6 +1,6 @@
-export const addEntity = (id, options) => ({
+export const addEntity = (options) => ({
   type: 'ENTITY_ADD',
-  payload: { id, ...options }
+  payload: options
 })
 
 export const deleteEntity = id => ({

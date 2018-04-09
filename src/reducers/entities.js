@@ -1,9 +1,9 @@
-import { dissoc } from 'ramda'
+import { append, dissoc } from 'ramda'
 
-const entities = (state = { 1: { x1: 20, y1: 100, width: 100, height: 100, id: 1 } }, {type, payload}) => {
+const entities = (state = [], {type, payload}) => {
   switch (type) {
     case 'ENTITY_ADD':
-      return Object.assign({}, state, payload)
+      return append(payload, state)
     case 'ENTITY_REMOVE':
       return dissoc(payload.id, state)
     default:

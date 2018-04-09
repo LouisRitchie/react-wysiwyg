@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { pick } from 'ramda'
 import { map, take, takeUntil, withLatestFrom } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
-import { pick } from 'ramda'
+import { addEntity } from 'actions/entities'
 import Toolbox from 'components/toolbox'
 import BackgroundGrid from 'components/backgroundGrid'
 import './styles.scss'
+
+const GRID_SIZE = 20
 
 const mapStateToProps = state => {
   const entities = state['entities']
@@ -35,7 +38,16 @@ class Workspace extends Component {
     this._shapeDrawn$ = this._mouseUp$.pipe(withLatestFrom(this._mouseDown$))
 
     this._shapeDrawn$.subscribe(
-      ([{pageX: x1, pageY: y1}, {pageX: x2, pageY: y2}]) => console.log()
+      ([{pageX: x1, pageY: y1}, {pageX: x2, pageY: y2}]) => (
+        this.props.addEntity(
+          {
+            x: Math.floor(Math.min(x1, x2) / GRID_SIZE),
+            y: Math.floor(Math.min(y1, y2) / GRID_SIZE),
+            height: Math.floor(Math.abs(y2 - y1) / GRID_SIZE),
+            width: Math.floor(Math.abs(x2 - x1) / GRID_SIZE)
+          }
+        )
+      )
     )
   }
 
@@ -45,7 +57,7 @@ class Workspace extends Component {
 
   render() {
     const { top, height, left, width } = getTLHW(this.state.currentCorods, this.state.startCoords)
-    console.log(this.props)
+    const { entities } = this.props
 
     return (
       <div className='workspaceWrapper'>
@@ -53,7 +65,19 @@ class Workspace extends Component {
         <Toolbox />
 
         <div className='drawArea' onMouseDown={this._mouseDown} onMouseUp={this._mouseUp} onMouseMove={this._mouseMove}>
-          {/* iterate over existing objects, placing them on the grid */}
+          {
+            entities.map(({x, y, height, width}, i) => (
+              <div
+                className='rectangularArea'
+                style={{
+                  top: y * GRID_SIZE,
+                  left: x * GRID_SIZE,
+                  height: height * GRID_SIZE,
+                  width: width * GRID_SIZE
+                }}
+                key={i} />
+            ))
+          }
 
           <div className='currentSelection' style={{top, left, height, width}} />
         </div>
@@ -62,7 +86,7 @@ class Workspace extends Component {
   }
 }
 
-export default connect(mapStateToProps)(Workspace)
+export default connect(mapStateToProps, {addEntity})(Workspace)
 
 const getTLHW = (currentCoords, startCoords) => {
   let result = [] // [top, left, height, width]
