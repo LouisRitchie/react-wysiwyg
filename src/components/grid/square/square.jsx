@@ -7,14 +7,16 @@ class Square extends Component {
 
     return (
       selected !== nextProps.selected ||
-      (coords[0][0] <= x && coords[1][0] >= x && coords[0][1] <= y && coords[1][1]) ||
-      (nextProps.coords[0][0] <= x && nextProps.coords[1][0] >= x && nextProps.coords[0][1] <= y && nextProps.coords[1])
+      (coords[0][0] <= x && coords[1][0] >= x && coords[0][1] <= y && coords[1][1] >= y) ||
+      (nextProps.coords[0][0] <= x && nextProps.coords[1][0] >= x && nextProps.coords[0][1] <= y && nextProps.coords[1] >= y)
     )
   }
 
   render() {
-    console.log('updating')
+    //console.log('updating', this.props.x, this.props.y, this.props.coords[0][0] <= this.props.x && this.props.coords[1][0] >= this.props.x && this.props.coords[0][1] <= this.props.y && this.props.coords[1][1])
     const { x, y, selected, coords } = this.props
+
+    console.log(x, y, ...coords)
 
     return (
       <div

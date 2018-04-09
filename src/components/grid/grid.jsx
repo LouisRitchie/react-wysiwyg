@@ -45,8 +45,7 @@ class Grid extends Component {
   mouseUp = event => this._mouseUp$.next(event)
 
   render() {
-    console.log(this.state.selected)
-    console.log(...this.state.coords)
+    console.log('set')
     return (
       <div
         onMouseMove={this.mouseMove}

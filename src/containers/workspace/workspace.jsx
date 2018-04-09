@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import Toolbox from 'components/toolbox'
-import Grid from 'components/grid'
+import BackgroundGrid from 'components/backgroundGrid'
 import './styles.scss'
 
 class Workspace extends Component {
   render() {
     return (
       <div className="workspaceWrapper">
+        <BackgroundGrid />
         <Toolbox />
-        <Grid />
       </div>
     )
   }
