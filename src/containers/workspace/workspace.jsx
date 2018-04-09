@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { pick } from 'ramda'
+import { last, pick } from 'ramda'
+import { interval } from 'rxjs/observable/interval'
 import { map, take, takeUntil, withLatestFrom } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 import { addEntity } from 'actions/entities'
@@ -18,7 +19,7 @@ const mapStateToProps = state => {
 class Workspace extends Component {
   state = {
     startCoords: [-1, -1],
-    currentCorods: [-1, -1]
+    currentCoords: [-1, -1]
   }
 
   componentDidMount() {
@@ -26,6 +27,10 @@ class Workspace extends Component {
     this._mouseMove$ = (new Subject()).pipe(map(pick(['pageX', 'pageY'])), takeUntil(this._unmount$))
     this._mouseDown$ = (new Subject()).pipe(map(pick(['pageX', 'pageY'])), takeUntil(this._unmount$))
     this._mouseUp$ = (new Subject()).pipe(map(pick(['pageX', 'pageY'])), takeUntil(this._unmount$))
+
+    this._updateCurrentCoords = interval(100).pipe(withLatestFrom(this._mouseMove$), map(last))
+
+    this._updateCurrentCoords.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoords: [pageX, pageY] }))
 
     this._mouseDown$.subscribe(
       ({pageX, pageY}) => this.setState({ startCoords: [pageX, pageY] })
@@ -56,8 +61,15 @@ class Workspace extends Component {
   _mouseMove = event => this._mouseMove$.next(event)
 
   render() {
-    const { top, height, left, width } = getTLHW(this.state.currentCorods, this.state.startCoords)
-    const { entities } = this.props
+    const {
+      props: { entities },
+      state: { currentCoords, startCoords }
+    } = this
+
+    const { top, height, left, width } = getTLHW(currentCoords, startCoords)
+
+    console.log(top, height, left, width)
+    console.log(startCoords[0])
 
     return (
       <div className='workspaceWrapper'>
@@ -79,7 +91,7 @@ class Workspace extends Component {
             ))
           }
 
-          <div className='currentSelection' style={{top, left, height, width}} />
+          { startCoords[0] !== -1 && <div className='currentSelection' style={{top, left, height, width}} /> }
         </div>
       </div>
     )
