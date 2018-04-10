@@ -5,7 +5,6 @@ import { interval } from 'rxjs/observable/interval'
 import { map, take, takeUntil, withLatestFrom } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 import { addEntity } from 'actions/entities'
-import Toolbox from 'components/toolbox'
 import ControlPanel from 'components/controlPanel'
 import BackgroundGrid from 'components/backgroundGrid'
 import './styles.scss'
@@ -70,7 +69,6 @@ class Workspace extends Component {
     return (
       <div className='workspaceWrapper'>
         <BackgroundGrid />
-        <Toolbox />
 
         <div className='drawArea' onMouseDown={this._mouseDown} onMouseUp={this._mouseUp} onMouseMove={this._mouseMove}>
           {

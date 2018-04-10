@@ -18,7 +18,7 @@ class ControlPanel extends Component {
   }
 
   componentWillUnmount() {
-    this._unmount$.next
+    this._unmount$.next()
   }
 
   _handleRangeChange = event => this._rangeChange$.next(event)
@@ -26,7 +26,10 @@ class ControlPanel extends Component {
   render() {
     return (
       <div className='controlPanelContainer'>
-        <input onChange={this._handleRangeChange} type='range' />
+        <div className='controlItem'>
+          <label><em>Grid Size</em></label>
+          <input onChange={this._handleRangeChange} type='range' />
+        </div>
       </div>
     )
   }
