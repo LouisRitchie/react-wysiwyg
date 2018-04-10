@@ -1,13 +1,21 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { last, pick } from 'ramda'
+import { last, mapObjIndexed, pick } from 'ramda'
 import { interval } from 'rxjs/observable/interval'
-import { map, take, takeUntil, withLatestFrom } from 'rxjs/operators'
+import { map, take, takeUntil, throttleTime, withLatestFrom } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 import { addEntity } from 'actions/entities'
 import ControlPanel from 'components/controlPanel'
 import BackgroundGrid from 'components/backgroundGrid'
+import { getTLHW, snapToGridFactory } from './helpers'
 import './styles.scss'
+
+const initialState = {
+  startCoords: [-1, -1],
+  currentCoords: [-1, -1],
+  startCoordsGhost: [-1, -1],
+  currentCoordsGhost: [-1, -1]
+}
 
 const mapStateToProps = state => {
   const { entities, settings: { gridSize } } = state
@@ -15,24 +23,26 @@ const mapStateToProps = state => {
 }
 
 class Workspace extends Component {
-  state = {
-    startCoords: [-1, -1],
-    currentCoords: [-1, -1]
+  state = initialState
+
+  componentWillMount() {
+    // the function that snaps user-drawn rectangles to the grid
+    this._snapToGrid = snapToGridFactory(this.props.gridSize)
   }
 
   componentDidMount() {
+
     this._unmount$ = (new Subject()).pipe(take(1))
     this._mouseMove$ = (new Subject()).pipe(map(pick(['pageX', 'pageY'])), takeUntil(this._unmount$))
     this._mouseDown$ = (new Subject()).pipe(map(pick(['pageX', 'pageY'])), takeUntil(this._unmount$))
     this._mouseUp$ = (new Subject()).pipe(map(pick(['pageX', 'pageY'])), takeUntil(this._unmount$))
 
-    this._updateCurrentCoords = interval(100).pipe(withLatestFrom(this._mouseMove$), map(last))
+    this._updateCurrentCoords$ = interval(60).pipe(withLatestFrom(this._mouseMove$), map(last))
+    this._updateCurrentCoordsGhost$ = this._updateCurrentCoords$.pipe(throttleTime(200))
 
-    this._updateCurrentCoords.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoords: [pageX, pageY] }))
-
-    this._mouseDown$.subscribe(
-      ({pageX, pageY}) => this.setState({ startCoords: [pageX, pageY] })
-    )
+    this._updateCurrentCoords$.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoords: [pageX, pageY] }))
+    this._updateCurrentCoordsGhost$.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoordsGhost: [pageX, pageY] }))
+    this._mouseDown$.subscribe(({pageX, pageY}) => this.setState(mapObjIndexed(() => [pageX, pageY], initialState)))
 
     this._mouseUp$.subscribe(
       () => this.setState({ startCoords: [-1, -1] })
@@ -41,17 +51,18 @@ class Workspace extends Component {
     this._shapeDrawn$ = this._mouseUp$.pipe(withLatestFrom(this._mouseDown$))
 
     this._shapeDrawn$.subscribe(
-      ([{pageX: x1, pageY: y1}, {pageX: x2, pageY: y2}]) => (
-        this.props.addEntity(
-          {
-            x: Math.floor(Math.min(x1, x2) / this.props.gridSize),
-            y: Math.floor(Math.min(y1, y2) / this.props.gridSize),
-            height: Math.floor(Math.abs(y2 - y1) / this.props.gridSize),
-            width: Math.floor(Math.abs(x2 - x1) / this.props.gridSize)
-          }
-        )
-      )
+      ([{pageX: x1, pageY: y1}, {pageX: x2, pageY: y2}]) => {
+        const { left: x, top: y, height, width } = this._snapToGrid([x1, y1], [x2, y2])
+        this.setState(initialState)
+        this.props.addEntity({x, y, height, width})
+      }
     )
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.gridSize !== nextProps.gridSize) {
+      this._snapToGrid = snapToGridFactory(nextProps.gridSize)
+    }
   }
 
   _mouseDown = event => this._mouseDown$.next(event)
@@ -61,10 +72,8 @@ class Workspace extends Component {
   render() {
     const {
       props: { entities, gridSize },
-      state: { currentCoords, startCoords }
+      state: { startCoords, currentCoords, startCoordsGhost, currentCoordsGhost }
     } = this
-
-    const { top, height, left, width } = getTLHW(currentCoords, startCoords)
 
     return (
       <div className='workspaceWrapper'>
@@ -85,7 +94,8 @@ class Workspace extends Component {
             ))
           }
 
-          { startCoords[0] !== -1 && <div className='currentSelection' style={{top, left, height, width}} /> }
+          { startCoords[0] !== -1 && <div className='currentSelection' style={getTLHW(startCoords, currentCoords)} /> }
+          { startCoordsGhost[0] !== -1 && <div className='ghostSelection' style={mapObjIndexed(val => val * gridSize, this._snapToGrid(startCoordsGhost, currentCoordsGhost))} /> }
 
           <ControlPanel />
         </div>
@@ -95,25 +105,3 @@ class Workspace extends Component {
 }
 
 export default connect(mapStateToProps, {addEntity})(Workspace)
-
-const getTLHW = (currentCoords, startCoords) => {
-  let result = [] // [top, left, height, width]
-
-  if (currentCoords[0] > startCoords[0]) {
-    result[1] = startCoords[0]
-    result[3] = currentCoords[0] - startCoords[0]
-  } else {
-    result[1] = currentCoords[0]
-    result[3] = startCoords[0] - currentCoords[0]
-  }
-
-  if (currentCoords[1] > startCoords[1]) {
-    result[0] = startCoords[1]
-    result[2] = currentCoords[1] - startCoords[1]
-  } else {
-    result[0] = currentCoords[1]
-    result[2] = startCoords[1] - currentCoords[1]
-  }
-
-  return { top: result[0], left: result[1], height: result[2], width: result[3] }
-}

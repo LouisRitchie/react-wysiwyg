@@ -9,10 +9,16 @@
     width: 100%;
 
     .rectangularArea,
+    .ghostSelection,
     .currentSelection {
       position: absolute;
-      border: 1px solid black;
+      border: 1px solid #999;
       box-sizing: border-box;
+    }
+
+    .ghostSelection {
+      background:rgba(230, 243, 255, 0.5);
+      border: none;
     }
   }
 }
