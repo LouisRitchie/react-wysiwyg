@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject'
 import { interval } from 'rxjs/observable/interval'
 import { distinctUntilChanged, map, pluck, take, takeUntil, withLatestFrom } from 'rxjs/operators'
 import { last } from 'ramda'
+import icons from 'static'
 import './styles.scss'
 
 class ControlPanel extends Component {
@@ -26,8 +27,11 @@ class ControlPanel extends Component {
   render() {
     return (
       <div className='controlPanelContainer'>
+        <div className='windowControls'>
+          {icons.enlarge}
+        </div>
         <div className='controlItem'>
-          <label><em>Grid Size</em></label>
+          <label><em>grid size</em></label>
           <input onChange={this._handleRangeChange} type='range' />
         </div>
       </div>
