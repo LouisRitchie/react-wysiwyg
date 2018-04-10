@@ -49,11 +49,14 @@ class Workspace extends Component {
     this._updateCurrentCoordsGhost$.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoordsGhost: [pageX, pageY] }))
 
     this._shapeDrawn$ = this._mouseUp$.pipe(withLatestFrom(this._mouseDown$))
-
     this._shapeDrawn$.subscribe(
       ([{pageX: x1, pageY: y1}, {pageX: x2, pageY: y2}]) => {
         const { left: x, top: y, height, width } = this._snapToGrid([x1, y1], [x2, y2])
-        this.props.addEntity({x, y, height, width})
+
+        if (height !== 0 || width !== 0) {
+          this.props.addEntity({x, y, height, width})
+        }
+
         this.setState(initialState)
       }
     )
@@ -81,7 +84,7 @@ class Workspace extends Component {
         <ControlPanel />
 
         <div className='drawArea' onMouseDown={this._mouseDown} onMouseUp={this._mouseUp} onMouseMove={this._mouseMove}>
-          { entities.map(({x, y, height, width}, i) => <RectangularArea x={x} y={y} height={height} width={width} key={i} id={i} />) }
+          { entities.map(({x, y, height, width, id}) => <RectangularArea x={x} y={y} height={height} width={width} key={id} id={id} />) }
           { startCoords[0] !== -1 && <div className='currentSelection' style={getTLHW(startCoords, currentCoords)} /> }
           { startCoordsGhost[0] !== -1 && <div className='ghostSelection' style={mapObjIndexed(val => val * gridSize, this._snapToGrid(startCoordsGhost, currentCoordsGhost))} /> }
         </div>

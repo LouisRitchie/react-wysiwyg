@@ -8,16 +8,15 @@
     height: 100%;
     width: 100%;
 
-    .ghostSelection,
     .currentSelection {
       position: absolute;
-      border: 1px solid #999;
+      border: 1px dashed #999;
       box-sizing: border-box;
     }
 
     .ghostSelection {
+      position: absolute;
       background: rgba(102, 153, 255, 0.5);
-      border: none;
     }
   }
 }

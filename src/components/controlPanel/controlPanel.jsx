@@ -32,7 +32,7 @@ class ControlPanel extends Component {
         </div>
         <div className='controlItem'>
           <label><em>grid size</em></label>
-          <input onChange={this._handleRangeChange} type='range' />
+          <input onChange={this._handleRangeChange} defaultValue='20' type='range' />
         </div>
       </div>
     )

@@ -6,6 +6,7 @@
 
   &.selected {
     background: repeating-linear-gradient(112.5deg, #69f 0px, #69f 2px, white 2px, white 25px);
+    border-color: #69f;
     animation: scrollBackground 1s infinite;
   }
 }
