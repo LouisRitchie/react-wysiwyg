@@ -5,8 +5,9 @@ import { interval } from 'rxjs/observable/interval'
 import { map, take, takeUntil, throttleTime, withLatestFrom } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 import { addEntity } from 'actions/entities'
-import ControlPanel from 'components/controlPanel'
 import BackgroundGrid from 'components/backgroundGrid'
+import RectangularArea from 'components/rectangularArea'
+import ControlPanel from 'components/controlPanel'
 import { getTLHW, snapToGridFactory } from './helpers'
 import './styles.scss'
 
@@ -38,7 +39,7 @@ class Workspace extends Component {
     this._mouseUp$ = (new Subject()).pipe(map(pick(['pageX', 'pageY'])), takeUntil(this._unmount$))
 
     this._updateCurrentCoords$ = interval(60).pipe(withLatestFrom(this._mouseMove$), map(last))
-    this._updateCurrentCoordsGhost$ = this._updateCurrentCoords$.pipe(throttleTime(200))
+    this._updateCurrentCoordsGhost$ = this._updateCurrentCoords$.pipe(throttleTime(250))
 
     this._updateCurrentCoords$.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoords: [pageX, pageY] }))
     this._updateCurrentCoordsGhost$.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoordsGhost: [pageX, pageY] }))
@@ -78,26 +79,12 @@ class Workspace extends Component {
     return (
       <div className='workspaceWrapper'>
         <BackgroundGrid />
+        <ControlPanel />
 
         <div className='drawArea' onMouseDown={this._mouseDown} onMouseUp={this._mouseUp} onMouseMove={this._mouseMove}>
-          {
-            entities.map(({x, y, height, width}, i) => (
-              <div
-                className='rectangularArea'
-                style={{
-                  top: y * gridSize,
-                  left: x * gridSize,
-                  height: height * gridSize,
-                  width: width * gridSize
-                }}
-                key={i} />
-            ))
-          }
-
+          { entities.map(({x, y, height, width}, i) => <RectangularArea x={x} y={y} height={height} width={width} key={i} />) }
           { startCoords[0] !== -1 && <div className='currentSelection' style={getTLHW(startCoords, currentCoords)} /> }
           { startCoordsGhost[0] !== -1 && <div className='ghostSelection' style={mapObjIndexed(val => val * gridSize, this._snapToGrid(startCoordsGhost, currentCoordsGhost))} /> }
-
-          <ControlPanel />
         </div>
       </div>
     )
