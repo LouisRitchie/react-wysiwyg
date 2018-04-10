@@ -82,7 +82,7 @@ class Workspace extends Component {
         <ControlPanel />
 
         <div className='drawArea' onMouseDown={this._mouseDown} onMouseUp={this._mouseUp} onMouseMove={this._mouseMove}>
-          { entities.map(({x, y, height, width}, i) => <RectangularArea x={x} y={y} height={height} width={width} key={i} />) }
+          { entities.map(({x, y, height, width}, i) => <RectangularArea x={x} y={y} height={height} width={width} key={i} id={i} />) }
           { startCoords[0] !== -1 && <div className='currentSelection' style={getTLHW(startCoords, currentCoords)} /> }
           { startCoordsGhost[0] !== -1 && <div className='ghostSelection' style={mapObjIndexed(val => val * gridSize, this._snapToGrid(startCoordsGhost, currentCoordsGhost))} /> }
         </div>

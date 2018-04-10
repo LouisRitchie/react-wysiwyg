@@ -1,4 +1,20 @@
-.rectangularAreaWrapper {
+.rectangularArea {
   position: absolute;
-  border: 1px solid black;
+  border: 1px solid #999;
+  box-sizing: border-box;
+  background: white; 
+
+  &.selected {
+    background: repeating-linear-gradient(112.5deg, #69f 0px, #69f 2px, white 2px, white 25px);
+    animation: scrollBackground 1s infinite;
+  }
+}
+
+@keyframes scrollBackground {
+  0% { background: repeating-linear-gradient(112.5deg, #69f 0px, #69f 1px, white 1px, white 25px); }
+  20% { background: repeating-linear-gradient(112.5deg, #69f 5px, #69f 6px, white 6px, white 30px); }
+  40% { background: repeating-linear-gradient(112.5deg, #69f 10px, #69f 11px, white 11px, white 35px); }
+  60% { background: repeating-linear-gradient(112.5deg, #69f 15px, #69f 16px, white 16px, white 40px); }
+  80% { background: repeating-linear-gradient(112.5deg, #69f 20px, #69f 21px, white 21px, white 45px); }
+  100% { background: repeating-linear-gradient(112.5deg, #69f 25px, #69f 26px, white 26px, white 50px); }
 }
