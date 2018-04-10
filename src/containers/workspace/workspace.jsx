@@ -32,30 +32,29 @@ class Workspace extends Component {
   }
 
   componentDidMount() {
-
     this._unmount$ = (new Subject()).pipe(take(1))
     this._mouseMove$ = (new Subject()).pipe(map(pick(['pageX', 'pageY'])), takeUntil(this._unmount$))
     this._mouseDown$ = (new Subject()).pipe(map(pick(['pageX', 'pageY'])), takeUntil(this._unmount$))
     this._mouseUp$ = (new Subject()).pipe(map(pick(['pageX', 'pageY'])), takeUntil(this._unmount$))
 
-    this._updateCurrentCoords$ = interval(60).pipe(withLatestFrom(this._mouseMove$), map(last))
-    this._updateCurrentCoordsGhost$ = this._updateCurrentCoords$.pipe(throttleTime(250))
-
-    this._updateCurrentCoords$.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoords: [pageX, pageY] }))
-    this._updateCurrentCoordsGhost$.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoordsGhost: [pageX, pageY] }))
     this._mouseDown$.subscribe(({pageX, pageY}) => this.setState(mapObjIndexed(() => [pageX, pageY], initialState)))
+    this._mouseUp$.subscribe(() => this.setState({ startCoords: [-1, -1] }))
 
-    this._mouseUp$.subscribe(
-      () => this.setState({ startCoords: [-1, -1] })
-    )
+    // update the dragged rectangle every 60ms
+    this._updateCurrentCoords$ = interval(60).pipe(withLatestFrom(this._mouseMove$), map(last))
+    this._updateCurrentCoords$.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoords: [pageX, pageY] }))
+
+    // update the ghost square every 250ms
+    this._updateCurrentCoordsGhost$ = this._updateCurrentCoords$.pipe(throttleTime(250))
+    this._updateCurrentCoordsGhost$.subscribe(({pageX, pageY}) => this.state.startCoords[0] !== -1 && this.setState({ currentCoordsGhost: [pageX, pageY] }))
 
     this._shapeDrawn$ = this._mouseUp$.pipe(withLatestFrom(this._mouseDown$))
 
     this._shapeDrawn$.subscribe(
       ([{pageX: x1, pageY: y1}, {pageX: x2, pageY: y2}]) => {
         const { left: x, top: y, height, width } = this._snapToGrid([x1, y1], [x2, y2])
-        this.setState(initialState)
         this.props.addEntity({x, y, height, width})
+        this.setState(initialState)
       }
     )
   }
